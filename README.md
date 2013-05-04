@@ -1,0 +1,3 @@
+# ember-model-firebase-adapter
+
+Coming soon...
