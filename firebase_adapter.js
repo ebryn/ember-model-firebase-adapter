@@ -40,8 +40,15 @@ Ember.FirebaseAdapter = Ember.Adapter.extend({
   },
 
   saveRecord: function(record) {
-    var url = this.buildURL(record.constructor, id), firebase = new Firebase(url);
+    var url = this.buildURL(record.constructor, get(record, 'id')),
+        firebase = new Firebase(url),
+        dirtyAttributes = record.get("_dirtyAttributes"),
+        data = record.getProperties(dirtyAttributes);
 
+    firebase.update(data, function(error) {
+      if (error) { throw new Error("Firebase error: ", error); }
+      record.didSaveRecord();
+    });
   },
 
   deleteRecord: function(record) {
