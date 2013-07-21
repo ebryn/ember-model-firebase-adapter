@@ -3,14 +3,14 @@ var get = Ember.get;
 Ember.FirebaseAdapter = Ember.Adapter.extend({
   find: function(record, id) {
     var url = this.buildURL(record.constructor, id), firebase = new Firebase(url);
-    firebase.on('value', function(snapshot) {
+    firebase.once('value', function(snapshot) {
       record.load(id, snapshot.val());
     });
   },
 
   findAll: function(klass, records) {
     var url = this.buildURL(klass), firebase = new Firebase(url);
-    firebase.on('value', function(snapshot) {
+    firebase.once('value', function(snapshot) {
       var data = snapshot.val(), dataArray = [];
       for (var key in data) {
         data[key].id = key;
@@ -34,7 +34,7 @@ Ember.FirebaseAdapter = Ember.Adapter.extend({
 
     newChild.set(data, function(error) {
       if (error) { throw new Error("Firebase error: ", error); }
-      record.load(newChild.name(), {});
+      record.set('id', newChild.name());
       record.didCreateRecord();
     });
   },
